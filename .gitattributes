@@ -1,0 +1,3 @@
+# Git hooks are shell scripts: keep them LF-only so the #!/bin/sh shebang
+# survives a Windows checkout. Scoped to .githooks/ only.
+.githooks/** text eol=lf
