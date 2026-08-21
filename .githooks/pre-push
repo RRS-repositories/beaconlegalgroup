@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Block direct pushes to `main`. Branch and open a Pull Request instead.
+#
+# Enable once per clone:   git config core.hooksPath .githooks
+#
+# This is a CLIENT-SIDE hook. It is a safety net, not a wall: `git push
+# --no-verify` bypasses it, and it only runs for people who have enabled it.
+# The real discipline is the branch -> PR workflow (see the CRM-Finalised
+# docs/GIT-WORKFLOW-RULES.md).
+
+protected="refs/heads/main"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+	if [ "$remote_ref" = "$protected" ]; then
+		echo "" >&2
+		echo "  Direct pushes to 'main' are not allowed." >&2
+		echo "" >&2
+		echo "  Create a branch and open a Pull Request:" >&2
+		echo "      git checkout -b yourname/short-description" >&2
+		echo "      git push -u origin yourname/short-description" >&2
+		echo "  then merge it via a PR on GitHub." >&2
+		echo "" >&2
+		echo "  (This hook is client-side; --no-verify bypasses it. Don't —" >&2
+		echo "   PR discipline still matters.)" >&2
+		echo "" >&2
+		exit 1
+	fi
+done
+
+exit 0
